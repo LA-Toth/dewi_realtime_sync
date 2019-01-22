@@ -1,3 +1,8 @@
+2.0.0
+  - !!! DEWI goes into multiple repositories and packages
+  - keep only the dewi.realtime_sync package as dewi_realtime_sync
+  - start using semantic versioning
+
 1.5
   - MainApplication: --debug implies --log-level debug
     default log level: info
