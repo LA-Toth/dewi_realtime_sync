@@ -29,26 +29,8 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name="dewi",
-    description="A toolchain and framework for everyday tasks",
-    long_description=\
-    """
-    DEWI is started as a developer tool, but contains many different commands (small tools).
-
-    DEWI can also use as a framework via its plugins - it's highly extensible.
-
-    It contains commands for
-    * syncing directory trees to local / remote location
-    * manage photos to eliminate duplicates and sort them in year/year-month/year-month-day/FNAME.EXT form
-    * edit files specified as filename:linenumber form
-    * split Balabit's Zorp logs to one session per file
-    * log into the Ubuntu (Linux) running bash on ubuntu on windows, to the same directory
-
-    It also contains framework for
-    * plugins (used by DEWI)
-    * generic modules (to split task, and so on) with a Config - dict to store values; and emit messages
-    * logparser: parse log files by modules based on the generic modules and emit messages
-    """,
+    name="dewi_realtime_sync",
+    description="DEWI realtime sync framework: synchronize a directory to another or to a server",
     license="LGPLv3",
     version="1.5",
     author="Laszlo Attila Toth",
@@ -56,7 +38,7 @@ setup(
     maintainer="Laszlo Attila Toth",
     maintainer_email="python-dewi@laszloattilatoth.me",
     keywords='tool framework development synchronization',
-    url="https://github.com/LA-Toth/dewi",
+    url="https://github.com/LA-Toth/dewi_realtime_sync",
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -70,6 +52,7 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: System :: Filesystems',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
@@ -80,15 +63,9 @@ setup(
     zip_safe=True,
     use_2to3=False,
     python_requires='>=3.6',
-    packages=find_packages(exclude=['pylintcheckers', '*test*']) + ['dewi.tests'],
-    entry_points={
-        'console_scripts': [
-            'dewi=dewi.__main__:main',
-        ]
-    },
-    requires=[
-        'Jinja2',
-        'pyyaml',
+    packages=find_packages(exclude=['pylintcheckers', '*test*']),
+    install_requires=[
         'watchdog',
+        'dewi_core>=2.0.1',
     ]
 )
