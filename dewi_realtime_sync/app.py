@@ -1,10 +1,10 @@
-# Copyright 2017-2019 Laszlo Attila Toth
+# Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
 
 import typing
 
 from dewi_realtime_sync.filesync_data import FileSyncEntry, FileSyncEntryManager
-from dewi_realtime_sync.filesystem import Filesystem, LocalFilesystem, RemoteFilesystem
+from dewi_realtime_sync.filesystem import Filesystem, LocalFilesystem, RemoteFilesystem, KubernetesFileSystem
 from dewi_realtime_sync.syncers import FileSynchronizer
 from dewi_realtime_sync.watchers.watchers import FileSynchronizerWatcher, FileSystemChangeWatcher, SkippableChangeWatcher
 from dewi_realtime_sync.watchers.watchdog import FileSystemChangeHandler, WatchDog
@@ -47,3 +47,11 @@ class SyncOverSshApp(SyncApp):
                  check_host_key: bool = True
                  ):
         super().__init__(directory, target_directory, entries, RemoteFilesystem(user, host, port, check_host_key))
+
+
+class SyncOverKubernetesApp(SyncApp):
+    def __init__(self, directory: str, target_directory: str,
+                 entries: typing.List[FileSyncEntry],
+                 namespace: str, pod: str, container: str
+                 ):
+        super().__init__(directory, target_directory, entries, KubernetesFileSystem(namespace, pod, container))

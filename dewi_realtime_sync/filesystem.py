@@ -1,4 +1,4 @@
-# Copyright 2017 Laszlo Attila Toth
+# Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
 
 import os
@@ -111,3 +111,27 @@ class LocalFilesystem(_RealFileSystem):
 
     def remove(self, remote_path):
         self.call_subprocess(['rm', '-r', remote_path])
+
+
+class KubernetesFileSystem(_RealFileSystem):
+    def __init__(self, namespace: str, pod: str, container: str):
+        self._namespace = namespace
+        self._pod = pod
+        self._container = container
+        self._remote_copy = ['kubectl', '-n', namespace, 'cp']
+        self._remote_exec = ['kubectl', '-n', namespace, 'exec', pod, '-c', container, '--']
+
+    def makedir(self, remote_path: str):
+        self.call_subprocess(self._remote_exec + ['mkdir', '-p', remote_path])
+
+    def copy(self, local_path: str, remote_path: str):
+        self.call_subprocess(self._remote_copy + [local_path, f'{self._pod}:{remote_path}', '-c', self._container])
+
+    def chown(self, remote_path: str, user: str, group: str):
+        self.call_subprocess(self._remote_exec + ['chown', '{}:{}'.format(user, group), remote_path])
+
+    def chmod(self, remote_path: str, permissions: str):
+        self.call_subprocess(self._remote_exec + ['chmod', permissions, remote_path])
+
+    def remove(self, remote_path):
+        self.call_subprocess(self._remote_exec + ['rm', '-r', remote_path])
