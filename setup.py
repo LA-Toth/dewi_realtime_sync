@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 #
-# DEWI: a developer tool and framework
-# Copyright (C) 2012-2018  Laszlo Attila Toth
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# Copyright (C) 2012-2022  Laszlo Attila Toth
 
 
 import sys
@@ -32,7 +18,7 @@ setup(
     name="dewi_realtime_sync",
     description="DEWI realtime sync framework: synchronize a directory to another or to a server",
     license="LGPLv3",
-    version="2.0.0",
+    version="2.1.0",
     author="Laszlo Attila Toth",
     author_email="python-dewi@laszloattilatoth.me",
     maintainer="Laszlo Attila Toth",
@@ -53,6 +39,9 @@ setup(
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: System :: Filesystems',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
