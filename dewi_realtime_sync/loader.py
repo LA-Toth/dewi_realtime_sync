@@ -1,8 +1,7 @@
-# Copyright 2017-2019 Tóth, László Attila
+# Copyright 2017-2022 Tóth, László Attila
 # Distributed under the terms of the GNU Lesser General Public License v3
 
 import sys
-import typing
 from io import TextIOWrapper
 
 from dewi_realtime_sync.filesync_data import FileSyncEntry, FileSyncFlags
@@ -12,7 +11,7 @@ class EntryListLoader:
     ENTRY_DEFAULT_FIELDS = ['', '', '', '', '', '']
     ENTRY_FLAGS_FIELD_IDX = len(ENTRY_DEFAULT_FIELDS) - 1
 
-    def _map_flags(self, flags_str: str, entry: str) -> typing.List[FileSyncFlags]:
+    def _map_flags(self, flags_str: str, entry: str) -> list[FileSyncFlags]:
         flags = list(flags_str)
         result = []
 
@@ -48,10 +47,10 @@ class EntryListLoader:
 
         return FileSyncEntry(source, target, user, group, perm, self._map_flags(flags, entry))
 
-    def load_from_string_list(self, entries: typing.List[str], skip_chmod: bool) -> typing.List[FileSyncEntry]:
+    def load_from_string_list(self, entries: list[str], skip_chmod: bool) -> list[FileSyncEntry]:
         return [self._create_entry_based_on_string(e, skip_chmod) for e in entries]
 
-    def load_from_stream(self, stream: TextIOWrapper, skip_chmod: bool) -> typing.List[FileSyncEntry]:
+    def load_from_stream(self, stream: TextIOWrapper, skip_chmod: bool) -> list[FileSyncEntry]:
         result = []
         for line in stream:
             line = line.strip()
@@ -62,6 +61,6 @@ class EntryListLoader:
 
         return result
 
-    def load_from_file(self, filename: str, skip_chmod: bool) -> typing.List[FileSyncEntry]:
+    def load_from_file(self, filename: str, skip_chmod: bool) -> list[FileSyncEntry]:
         with open(filename) as f:
             return self.load_from_stream(f, skip_chmod)

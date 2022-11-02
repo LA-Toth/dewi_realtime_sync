@@ -5,8 +5,8 @@
 
 import sys
 
-if sys.hexversion < 0x03060000:
-    raise RuntimeError("Required python version: 3.6 or newer (current: %s)" % sys.version)
+if sys.hexversion < 0x030a0000:
+    raise RuntimeError("Required python version: 3.10 or newer (current: %s)" % sys.version)
 
 try:
     from setuptools import setup, find_packages
@@ -37,11 +37,8 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: System :: Filesystems',
         'Topic :: Software Development',
         'Topic :: Software Development :: Libraries',
@@ -51,7 +48,7 @@ setup(
     ],
     zip_safe=True,
     use_2to3=False,
-    python_requires='>=3.6',
+    python_requires='>=3.10',
     packages=find_packages(exclude=['pylintcheckers', '*test*']),
     install_requires=[
         'watchdog',

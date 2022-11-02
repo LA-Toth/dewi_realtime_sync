@@ -1,4 +1,4 @@
-# Copyright 2017-2019 Laszlo Attila Toth
+# Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
 
 #
@@ -6,7 +6,6 @@
 #
 
 import os
-import typing
 
 from dewi_core.logger import log_debug, log_info
 from dewi_realtime_sync.filesync_data import FileSyncEntryManager
@@ -55,7 +54,7 @@ class SkippableChangeWatcher(ChangeWatcher):
         'dist',
     ]
 
-    def __init__(self, root_directories: typing.List[str]):
+    def __init__(self, root_directories: list[str]):
         self.directories = [(d[:-1] if d.endswith('/') else d) for d in root_directories]
 
     def modified(self, path: str) -> bool:
@@ -137,7 +136,7 @@ class FileSynchronizerWatcher(ChangeWatcher):
 
 
 class FileSystemChangeWatcher:
-    def __init__(self, directories: typing.List[str]):
+    def __init__(self, directories: list[str]):
         self._directories = list(directories)
         self._watchers = list()
 

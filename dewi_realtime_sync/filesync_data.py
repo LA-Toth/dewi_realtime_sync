@@ -1,11 +1,10 @@
-# Copyright 2017 Laszlo Attila Toth
+# Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
+
 import enum
 import fnmatch
 import os
 import re
-
-import typing
 
 
 class FileSyncFlags(enum.Enum):
@@ -20,10 +19,10 @@ class FileSyncEntry:
     def __init__(self,
                  local_path: str,
                  target_path: str,
-                 owner: typing.Optional[str] = None,
-                 group: typing.Optional[str] = None,
-                 permissions: typing.Optional[str] = None,
-                 flags: typing.Optional[typing.List[FileSyncFlags]] = None
+                 owner: str | None = None,
+                 group: str | None = None,
+                 permissions: str | None = None,
+                 flags: list[FileSyncFlags] | None = None
                  ):
         self.local_path = local_path
         self.target_path = target_path
@@ -50,12 +49,12 @@ class DetailedEntry:
 
 
 class FileSyncEntryManager:
-    def __init__(self, entries: typing.List[FileSyncEntry]):
+    def __init__(self, entries: list[FileSyncEntry]):
         self._entries = dict()
         for e in entries:
             self._entries[e.local_path] = e
 
-    def get_entry(self, filename: str) -> typing.Optional[DetailedEntry]:
+    def get_entry(self, filename: str) -> DetailedEntry | None:
         entry = self._get_filesync_entry_by_path(filename)
 
         if entry:
@@ -63,14 +62,14 @@ class FileSyncEntryManager:
         else:
             return None
 
-    def _get_filesync_entry_by_path(self, filename: str) -> typing.Optional[FileSyncEntry]:
+    def _get_filesync_entry_by_path(self, filename: str) -> FileSyncEntry | None:
         if filename in self._entries:
             return self._entries[filename]
 
         else:
             return self._get_filesync_entry_by_path_patterns(filename)
 
-    def _get_filesync_entry_by_path_patterns(self, filename: str) -> typing.Optional[FileSyncEntry]:
+    def _get_filesync_entry_by_path_patterns(self, filename: str) -> FileSyncEntry | None:
         result = None
         for (pattern, entry) in self._entries.items():
             if fnmatch.fnmatchcase(filename, pattern):

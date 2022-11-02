@@ -1,11 +1,10 @@
-# Copyright 2017-2018 Laszlo Attila Toth
+# Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
 # The license can be found in COPYING file or on http://www.gnu.org/licenses/
 
-import typing
 
 import dewi_core.testcase
-from dewi_realtime_sync.filesync_data import FileSyncFlags, FileSyncEntry, DetailedEntry
+from dewi_realtime_sync.filesync_data import DetailedEntry, FileSyncEntry, FileSyncFlags
 from dewi_realtime_sync.filesystem import CommandTrackerFilesystem
 from dewi_realtime_sync.syncers import FileSynchronizer
 
@@ -57,17 +56,17 @@ class TestFileSynchronizer(dewi_core.testcase.TestCase):
         ]
 
     def assert_sync(self, local_name: str, entry: FileSyncEntry,
-                    expected_commands: typing.List[typing.List[typing.Union['str', typing.List[typing.Any]]]]):
+                    expected_commands: list[list[str | None]]):
         detailed_entry = DetailedEntry(entry, self.remote_name)
         self.tested.sync(local_name, detailed_entry)
         self.assert_equal(expected_commands, self.fs.commands)
 
     def assert_file_sync(self, entry: FileSyncEntry,
-                         expected_commands: typing.List[typing.List[typing.Union['str', typing.List[typing.Any]]]]):
+                         expected_commands: list[list[str | None]]):
         self.assert_sync(self.local_full_name, entry, expected_commands)
 
     def assert_dir_sync(self, entry: FileSyncEntry,
-                        expected_commands: typing.List[typing.List[typing.Union['str', typing.List[typing.Any]]]]):
+                        expected_commands: list[list[str | None]]):
         self.assert_sync(self.dir_name, entry, expected_commands)
 
     def assert_removal(self, local_path: str, entry: FileSyncEntry):
