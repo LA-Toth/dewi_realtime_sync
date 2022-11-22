@@ -13,10 +13,14 @@ class SyncApp:
     def __init__(self, directory: str, target_directory: str,
                  entries: list[FileSyncEntry],
                  filesystem: Filesystem):
-        self._directory = directory
-        self._target_directory = target_directory
+        self._directory = self._rstrip(directory)
+        self._target_directory = self._rstrip(target_directory)
         self._entries = entries
         self._filesystem = filesystem
+
+    def _rstrip(self, s: str):
+        s = s.rstrip('/')
+        return s if s else '/'
 
     def run(self):
         handler = self._create_watchdog_handler()
