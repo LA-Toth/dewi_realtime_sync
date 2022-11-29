@@ -12,11 +12,14 @@ from dewi_realtime_sync.watchers.watchers import FileSynchronizerWatcher, FileSy
 class SyncApp:
     def __init__(self, directory: str, target_directory: str,
                  entries: list[FileSyncEntry],
-                 filesystem: Filesystem):
+                 filesystem: Filesystem,
+                 parallel: int | bool | None = None
+                 ):
         self._directory = self._rstrip(directory)
         self._target_directory = self._rstrip(target_directory)
         self._entries = entries
         self._filesystem = filesystem
+        self._parallel = parallel
 
     def _rstrip(self, s: str):
         s = s.rstrip('/')
@@ -30,7 +33,7 @@ class SyncApp:
     def _create_watchdog_handler(self) -> FileSystemChangeHandler:
         entry_manager = FileSyncEntryManager(self._entries)
         synchronizer = FileSynchronizer(self._directory, self._target_directory, self._filesystem)
-        fsw = FileSystemChangeWatcher([self._directory])
+        fsw = FileSystemChangeWatcher([self._directory], self._parallel)
         fsw.register_watcher(SkippableChangeWatcher([self._directory]))
         fsw.register_watcher(FileSynchronizerWatcher(synchronizer, entry_manager))
         handler = FileSystemChangeHandler(fsw)
@@ -55,6 +58,8 @@ class SyncOverSshApp(SyncApp):
 class SyncOverKubernetesApp(SyncApp):
     def __init__(self, directory: str, target_directory: str,
                  entries: list[FileSyncEntry],
+                 parallel: int | bool | None,
                  namespace: str, pod: str, container: str
                  ):
-        super().__init__(directory, target_directory, entries, KubernetesFileSystem(namespace, pod, container))
+        super().__init__(directory, target_directory, entries, KubernetesFileSystem(namespace, pod, container),
+                         parallel)

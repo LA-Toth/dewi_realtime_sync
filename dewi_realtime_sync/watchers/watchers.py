@@ -1,11 +1,13 @@
 # Copyright 2017-2022 Laszlo Attila Toth
 # Distributed under the terms of the GNU Lesser General Public License v3
+import multiprocessing
 
 #
 # This file contains file watchers for specific systems
 #
 
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 from dewi_core.logger import log_debug, log_info
 from dewi_realtime_sync.filesync_data import FileSyncEntryManager
@@ -136,9 +138,28 @@ class FileSynchronizerWatcher(ChangeWatcher):
 
 
 class FileSystemChangeWatcher:
-    def __init__(self, directories: list[str]):
+    _executor: ThreadPoolExecutor | None
+
+    def __init__(self, directories: list[str], parallel: int | bool | None):
         self._directories = list(directories)
         self._watchers = list()
+        self._thread_count = 1
+        self._executor = None
+
+        self._prepare_threading(parallel)
+
+    def _prepare_threading(self, parallel):
+        if isinstance(parallel, int):
+            self._thread_count = parallel if parallel > 1 or parallel == 0 else 1
+        elif isinstance(parallel, bool):
+            self._thread_count = 1 if not parallel else 0
+
+        if self._thread_count == 1:
+            return
+        elif self._thread_count == 0:
+            self._thread_count = max(1, multiprocessing.cpu_count() - 1)
+
+        self._executor = ThreadPoolExecutor(self._thread_count)
 
     def register_watcher(self, watcher: ChangeWatcher):
         log_debug('Registering change watcher', {'class': type(watcher).__name__})
@@ -154,7 +175,16 @@ class FileSystemChangeWatcher:
         self._process_change(path, 'deleted', 'removed')
 
     def _process_change(self, path: str, change_type: str, callback: str):
-        log_info('Process change', change_type=change_type, method=callback, path=path)
+        log_info('Process change', change_type=change_type, method=callback, path=path, threaded=self._thread_count > 1)
+        if self._executor:
+            self._executor.submit(self._process_change_cb, path, change_type, callback, True)
+        else:
+            self._process_change_cb(path, change_type, callback, False)
+
+    def _process_change_cb(self, path: str, change_type: str, callback: str, log: bool):
+        if log:
+            log_info('Process change, call watchers', change_type=change_type, method=callback, path=path)
+
         for watcher in self._watchers:
             processed = getattr(watcher, callback)(path)
 
