@@ -8,11 +8,8 @@ import sys
 if sys.hexversion < 0x030a0000:
     raise RuntimeError("Required python version: 3.10 or newer (current: %s)" % sys.version)
 
-try:
-    from setuptools import setup, find_packages
+from setuptools import setup, find_packages
 
-except ImportError:
-    from distutils.core import setup
 
 setup(
     name="dewi_realtime_sync",
